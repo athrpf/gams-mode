@@ -1,7 +1,7 @@
 $title	A sample program for GAMS-OUTLINE mode.
 display "com: A sample program for GAMS-OUTLINE mode.";
 $ontext
-Time-stamp:	<2011-10-11 00:28:01 Shiro Takeda>
+Time-stamp:	<2011-12-31 13:10:06 Shiro Takeda>
 Filename:	outline-sample.gms
 Author:		Shiro Takeda
 First-written:	<2001/10/26>
@@ -96,7 +96,7 @@ display "com: Example 1: A simple example.";
 display "";
 
 set
-    iter Iteration index		/iter1*iter20/
+    iter Iteration index		/ iter1*iter20 /
 ;
 parameter
     num		    Iteration number
@@ -157,9 +157,9 @@ display "";
 
 * The model presented in this example is the core-periphery model of Chap 5 in
 * Fujita, Krugman, and Venables (1999) "Spatial Economy", MIT press.
-set	itr	Times of iteration (lambda)		/iter1*iter11/
-	tc	Times of iteration (transport cost)	/1*5/
-	allo	Vector of omegas			/omone, omtwo, omratio/;
+set	itr	Times of iteration (lambda)		/ iter1*iter11 /
+	tc	Times of iteration (transport cost)	/ 1*5 /
+	allo	Vector of omegas			/ omone, omtwo, omratio /;
 
 parameters
     lowest  The lowest value of transport cost
@@ -320,8 +320,8 @@ table bmflow(*,*)  Benchmark flows (in value terms)
 	k      -60     -40		 100
 	tax    -20	 0		  20
 
-set	i	Goods index  /x, y/
-	f	Factors index /l, k/;
+set	i	Goods index	/ x, y /
+	f	Factors index	/ l, k /;
 alias (i,j)
 
 parameter

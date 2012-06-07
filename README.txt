@@ -1,6 +1,6 @@
 Author:  Shiro Takeda
 Maintainer:  Shiro Takeda
-Time-stamp:  <2011-10-05 22:33:06 Shiro Takeda>
+Time-stamp:  <2011-10-22 16:57:57 Shiro Takeda>
 
 This package offers the Emacs lisp program for using the numerical
 software GAMS in Emacs (GAMS mode for Emacs).
@@ -228,25 +228,40 @@ such as 0, "a", or t all mean non-nil.  But we usually use symbol t as
 non-nil.  So, when I say "set non-nil to x", set t to x (i.e. (setq x t)).
 
 
-Requirement:
+=====================
+* Setting for shell
 
-To MS Windows users:
-
-If you would like to call GAMS from Emacs, it is necessary that you have
-installed the shell.  There are two alternatives for this.  The first one
-is the bash.exe offered by Cygwin project <http://www.cygwin.com/>.  If
-you want to install bash, download <http://www.cygwin.com/setup.exe>.  If
-you execute this executable file and select bash, you can install it.
+If you would like to call GAMS (gams.exe) from Emacs, it is necessary that
+you have installed the shell.  There are two choices for this.  The first
+one is the bash.  If you are UNIX user, bash must have been installed.  If
+you are MS windows user, you can use bash.exe offered by Cygwin project
+<http://www.cygwin.com/>.  If you want to install bash, download
+<http://www.cygwin.com/setup.exe>.  If you execute this executable file
+and select bash, you can install it. If you are UNIX user, you can use
+tsch instead of bash.
 
 The second one is cmdproxy.exe which is distributed with NTEmacs.  If you
-have installed NTEmacs, cmdproxy.exe is also installed in the same
-directory as runemacs.exe.  Moreover, you need to make configurations on
-shell in "~/.emacs.el".  Concerning the shell setting in "~/.emacs.el" on
-NTEmacs, please see the web site
-<http://www.gnu.org/software/emacs/windows/>.
+have installed NTEmacs, cmdproxy.exe is also installed in the same directory
+as runemacs.exe.
 
-Windows 2000/XP has cmd.exe as the shell.  But it is not recommended to
-use cmd.exe.  So 2000/XP users had better use bash or cmdproxy, too.
+Windows 2000/XP has cmd.exe as the shell.  But it is not recommended to use
+cmd.exe.  So 2000/XP users had better use bash or cmdproxy, too.
+
+If you use bash(.exe), write the following in "~/.emacs.el":
+
+  (setq shell-file-name "bash")
+  (setq shell-command-option "-c")
+
+and if you use cmdproxy.exe,
+
+  (setq shell-file-name "cmdproxy")
+  (setq shell-command-option "-c")
+
+For more details of shell setting in "~/.emacs.el" on NTEmacs, please see
+the web site <http://www.gnu.org/software/emacs/windows/>.
+
+=====================
+* Installation of GAMS mode.
 
 Then, I will explain the installation.
 
@@ -283,10 +298,13 @@ If you want to color an Emacs buffer, add the followings, too.
 
    (require 'font-lock)
    (global-font-lock-mode t)
-
+   (setq jit-lock-chunk-size 50000)
+   
 This make the colorization function of Emacs on and GAMS mode buffer will
-be colored.  For Emacs 21-23 user, please read BUGS_PROBLEMS.txt file,
-too.
+be colored. The third line is required because the default value of
+`jit-lock-chunk-size' (i.e. 500) is too small for GAMS mode.
+
+For Emacs 21-23 user, please read BUGS_PROBLEMS.txt file, too.
 
 There is a sample setting file ("dot-emacs-sample") distributed with this
 file.  Please read it, too.

@@ -2,7 +2,7 @@ $title GAMS mode for Emacsの使い方を説明するためのサンプルプログラム
 display "com: GAMS mode for Emacsの使い方を説明するためのサンプルプログラム．";
 ** gams-lst-file: .\doc\lst-sample.lst
 $ontext
-Time-stamp:     <2011-10-07 11:20:06 Shiro Takeda>
+Time-stamp:     <2012-01-28 20:45:05 Shiro Takeda>
 Filename:       "gams-sample-ja.gms"
 Author:         Shiro Takeda
 First-written:  <2001/08/13>
@@ -531,11 +531,11 @@ font-lock をオンにするには "~/.emacs.el" ファイルに以下のコードを付け加えてお
 $offtext
 *       Type `C-cC-f' and change the coloring level!
 
-set    k       Index k                /1,2/
-       l       Index l                /l1*l10/;
+set    k       Index k                / 1,2 /
+       l       Index l                / l1*l10 /;
 
-parameter    s       Parameter s     /1/
-	     t       Parameter t     /2/
+parameter    s       Parameter s     / 1 /
+	     t       Parameter t     / 2 /
 	     u(k)    Parameter u;
 u(k) = 1;
 
@@ -596,7 +596,7 @@ $ontext
 
 ミニバッファーに次のような表示が現れます。
 
-The declaration part of `a': [?]help,[d]ecl,[n]ext,[p]rev,[e]copy,[r]escan,[ ]restore,[RET]jump
+The declaration part of `a': [?]help,[d]ecl,[n]ext,[p]rev,[e]copy,[r]escan,[ ]restore,[ENT]jump
 
 ここで n (or p) をタイプすると次に (一個前に) a が現れる位置にジャンプします。
 d をタイプすると宣言部分に移動します。また、c をタイプすると元々の位置に移動
@@ -738,8 +738,8 @@ $offtext
 *       ここから．
 *	----------------------------------------------------------------------
 
-set     i       Index   /i1*i2/
-j       Index   /j1*j2/;
+set     i       Index   / i1*i2 /
+j       Index   / j1*j2 /;
 
 parameter
 para(i,j)       Parameter a
@@ -852,7 +852,7 @@ $stitle		GAMS LST mode におけるその他のコマンド．
 *        ----------------------------------------------------------------------
 $ontext
 
-If you type `M-x help RETURN' and `m' in a LST file buffer, you can read
+If you type `M-x help ENTER' and `m' in a LST file buffer, you can read
 the simple explanation of GAMS LST mode (or type `?' in a LST file
 buffer).  It is like this:
 
@@ -926,7 +926,7 @@ display "";
 display "com: GAMS-OUTLINE mode は↓のような表示をできる．";
 display "";
 
-set     iter    Iteration index                /iter1*iter20/;
+set     iter    Iteration index                / iter1*iter20 /;
 
 parameter
     num             Iteration number
@@ -951,6 +951,7 @@ display "GAMS-OUTLINE モードについて詳しくは outline-sample.gms というサンプルの
 display "or GAMS-OUTLINE mode のヘルプ (このバッファーで `?' を押す).";
 
 display a;
+
 
 * --------------------
 * Local Variables:

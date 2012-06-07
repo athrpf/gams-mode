@@ -1,10 +1,25 @@
 Author: Shiro Takeda
 Maintainer: Shiro Takeda
-Time-stamp: <2011-10-15 12:50:58 Shiro Takeda>
+Time-stamp: <2012-06-02 23:44:42 Shiro Takeda>
 ----------------------------------------------------
 
 Change logs of GAMS mode.
 ----------------------------------------------------
+
+Version 3.6.6 (2012-06-02)
+----------------------------------
+
+* Quited supporting XEmacs because I have no environment for testing
+  XEmacs.
+
+* Increased the default value of `gams-lxi-maximum-line' (from 500000 to
+  1000000).
+
+* Fixed a bug in `gams-show-identifier'.
+
+* Fixed many minor bugs.
+  
+
 
 Version 3.6.5 (2011-10-15)
 ----------------------------------

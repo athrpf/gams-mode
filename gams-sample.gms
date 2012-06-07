@@ -1,6 +1,7 @@
+*#!c:/GAMS/GAMS/gams.exe gams-sample.gms ll=0 lo=3 pw=130 ps=0
 $title A sample file for learning how to use GAMS mode for Emacs.
 $ontext
-Time-stamp:     <2011-10-14 12:47:16 Shiro Takeda>
+Time-stamp:     <2012-02-16 11:36:21 Shiro Takeda>
 Filename:       "gams-sample.gms"
 Author:         Shiro Takeda
 First-written:  <2001/08/13>
@@ -34,10 +35,10 @@ Commentary:
   * Place this file, "include-sample.gms" and "include-sample-2.gms" in the
     same directory.
 
-  * Notations like "C-cC-v" follow the Emacs convention.  For example,
+  * Notations like "C-cC-v" follow the Emacs convention. For example,
 
-    `C-cC-v' ==>  Type "Control key + c" and then type "Control + v" key.
-    `M-q'    ==>  Type "Meta (or Alt) key + q".
+    `C-cC-v' ->  Type "Control key + c" and then type "Control + v" key.
+    `M-q'    ->  Type "Meta (or Alt) key + q".
 
   * You can see the explanation of variables and commands by M-x
     describe-variable and M-x describe-function respectively.
@@ -76,13 +77,13 @@ following message in the mini-buffer.
 Type `s', and GAMS will start.  Or if you type [f9] or `C-cC-s', GAMS will
 directly start.
 
-[Note] if GAMS doesn't start or doesn't work well, some configurations are
-likely to be improper.  Please check the following:
+[Note] if GAMS doesn't start or doesn't work well, there are likely to be
+some problems in configurations. Please check the following:
 
   + Does a shell (such as bash or cmdproxy) work properly in your Emacs?
 
-  + Check the setting of the variable `gams:process-command-name'.  If you
-    do not include the GAMS system directory in the environmental variable
+  + Check the setting of the variable `gams:process-command-name'. If you do
+    not include the GAMS system directory in the environmental variable
     PATH, you must set the full path to GAMS to `gams:process-command-name'.
 
 
@@ -370,7 +371,7 @@ following message will appear in the mini-buffer.
 
 
 Type SPACE or TAB key and the list of candidates will appear.  If you type
-RETURN, the default value `set' is inserted.  Or if you type, for example,
+ENTER, the default value `set' is inserted.  Or if you type, for example,
 `v' and then `SPACE', and the statement `VARIABLE' will be automatically
 inserted in the mini-buffer.
 
@@ -580,11 +581,11 @@ Try it!
 $offtext
 *       Type `C-cC-f' and change the coloring level!
 
-set    k       Index k                /1,2/
-       l       Index l                /l1*l10/;
+set    k       Index k                / 1, 2 /
+       l       Index l                / l1*l10 /;
 
-parameter    v       Parameter v     /1/
-	     t       Parameter t     /2/
+parameter    v       Parameter v     / 1 /
+	     t       Parameter t     / 2 /
 	     u(k)    Parameter u;
 u(k) = 1;
 
@@ -637,14 +638,14 @@ will appear in the upper window and the position of the cursor will be
 displayed in the left window.  You will see the following message in the
 mini-buffer:
 
-	The declaration part of `u': [?]help,[d]ecl,[n]ext,[p]rev,[e]copy,[r]escan,[ ]restore,[RET]jump
+	The declaration part of `u': [?]help,[d]ecl,[n]ext,[p]rev,[e]copy,[r]escan,[ ]restore,[ENT]jump
 
 If you type n(p), you can move to the next (previous) place where "u"
 appears.  Type d, you can move to the declaration part.  Type c, you can
 move to the original point.
 
 If you type SPC, the previous window position will be restored.  If you type
-RET, you will jump to the declaration part.  If you type other keys, two
+ENT, you will jump to the declaration part.  If you type other keys, two
 buffers will continue to be displyed.
 
 Typing ? will show the help.
@@ -793,8 +794,8 @@ $offtext
 *       From here.
 *	----------------------------------------------------------------------
 
-set     i       Index   /i1*i2/
-j       Index   /j1*j2/;
+set     i       Index   / i1*i2 /
+j       Index   / j1*j2 /;
 
 parameter
 para(i,j)       Parameter a
@@ -831,8 +832,8 @@ $ontext
 Select the above region and type `M-C-\' (`indent-region'), then the above
 region is indented like the following:
 
-set     i       Index   /i1*i2/
-	j       Index   /j1*j2/;
+set     i       Index   / i1*i2 /
+	j       Index   / j1*j2 /;
 
 parameter
     para(i,j)       Parameter a

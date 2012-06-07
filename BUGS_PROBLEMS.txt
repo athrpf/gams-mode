@@ -1,17 +1,18 @@
 Author: Shiro Takeda
 Maintainer: Shiro Takeda
-Time-stamp: <2011-09-09 22:34:28 Shiro Takeda>
+Time-stamp: <2012-01-04 16:28:15 Shiro Takeda>
 -----------------------------------------------------
 
-Known bugs and problems.
+Known bugs and problems of GAMS mode.
 
-Note: TAB key (or Shift + TAB) -> unfold items.
+Note: When you open this file in Emacs, this buffer must be in Org-mode.  To
+unfold items, push TAB key (or Shift + TAB).
 
 
 * The old version Emacs and XEmacs
 
-I only test gams.el in Emacs23. So gams.el is likely not to work well in the
-old version of Emacs and XEmacs.
+I only test gams.el in Emacs23.  So gams.el is likely not to work well in
+the old version of Emacs and XEmacs.
 
 
 * Viewing documents
@@ -57,38 +58,6 @@ By this code, TAB key is binded to inserting TAB character and F2 key is
 binded to the indentation.
 
 
-* Setting for shell
-
-If you would like to call GAMS (gams.exe) from Emacs, it is necessary that
-you have installed the shell.  There are two choices for this.  The first
-one is the bash.  If you are UNIX user, bash must have been installed.  If
-you are MS windows user, you can use bash.exe offered by Cygwin project
-<http://www.cygwin.com/>.  If you want to install bash, download
-<http://www.cygwin.com/setup.exe>.  If you execute this executable file and
-select bash, you can install it. If you are UNIX user, you can use tsch
-instead of bash.
-
-The second one is cmdproxy.exe which is distributed with NTEmacs.  If you
-have installed NTEmacs, cmdproxy.exe is also installed in the same directory
-as runemacs.exe.
-
-Windows 2000/XP has cmd.exe as the shell.  But it is not recommended to use
-cmd.exe.  So 2000/XP users had better use bash or cmdproxy, too.
-
-If you use bash(.exe), write the following in "~/.emacs.el":
-
-  (setq shell-file-name "bash")
-  (setq shell-command-option "-c")
-
-and if you use cmdproxy.exe,
-
-  (setq shell-file-name "cmdproxy")
-  (setq shell-command-option "-c")
-
-For more details of shell setting in "~/.emacs.el" on NTEmacs, please see
-the web site <http://www.gnu.org/software/emacs/windows/>.
-
-
 * `comment-style' variable in new Emacs
 
 In the new Emacs (ver 23.0.9), the default value of `comment-style' changed
@@ -132,7 +101,7 @@ limitation, automatic recoloring for texts in $ontext-$offtext does not
 work.
 
 To cover this shortcoming, gams.el provides the command `gams-recenter'
-which is binded to `C-l'. When the variable `gams-recenter-font-lock' is
+which is binded to `C-l'.  When the variable `gams-recenter-font-lock' is
 assigned non-nil like
 
   (setq gams-recenter-font-lock t)
