@@ -1,8 +1,8 @@
 ;;; GAMS.EL --- Major mode for editing GAMS program files.
 
-;; Copyright (C) 2001-2011 Shiro Takeda
-;; Version: 3.6.6
-;; Time-stamp: <2012-06-02 23:40:45 Shiro Takeda>
+;; Copyright (C) 2001-2012 Shiro Takeda
+;; Version: 4.0
+;; Time-stamp: <2012-09-08 19:09:32 Shiro Takeda>
 
 ;; Author: Shiro Takeda
 ;; Maintainer: Shiro Takeda
@@ -82,7 +82,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defconst gams-mode-version "3.6.6"
+(defconst gams-mode-version "4.0"
   "Version of GAMS mode.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -309,7 +309,7 @@ in this variable like
   :type 'file
   :group 'gams)
 
-(defcustom gams-special-comment-symbol "com:"
+(defcustom gams-special-comment-symbol "@"
   "*The symbol that indicates the special comment."
   :type 'string
   :group 'gams)
@@ -322,6 +322,12 @@ in this variable like
 (defcustom gams-align-default-spacing 3
   "Spaces for `gams-align-block'."
   :type 'integer
+  :group 'gams)
+
+(defcustom gams-outline-regexp "\\*@+[ \t]"
+  "*outline-regex for gams-mode.
+Specify the regular expressions of the symbol used to represent headlines."
+  :type 'string
   :group 'gams)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -432,19 +438,19 @@ If nil, automatic indent doesn't work and tab key insert tab itself."
   :type 'boolean
   :group 'gams)
 
-(defcustom gams-indent-number 8
+(defcustom gams-indent-number 4
   "*Indent number for general statemets."
   :type 'integer
   :group 'gams)
 
-(defcustom gams-indent-number-loop 8
+(defcustom gams-indent-number-loop 4
   "*Indent number in loop type environment.
 
 loop type statement means \"loop\", \"if\", \"while\", \"for\" etc."
   :type 'integer
   :group 'gams)
 
-(defcustom gams-indent-number-mpsge 8
+(defcustom gams-indent-number-mpsge 4
   "*Indent number in mpsge type environment.
 
 MPSGE type statement means \"$sector:\", \"$commodities:\", \"$prod:\"
@@ -452,7 +458,7 @@ etc."
   :type 'integer
   :group 'gams)
 
-(defcustom gams-indent-number-equation 8
+(defcustom gams-indent-number-equation 4
   "*Indent number for equation definition."
   :type 'integer
   :group 'gams)
@@ -796,6 +802,32 @@ register mpsge statements in this variable.")
   "*The keybinding for `gams-choose-font-lock-level'."
   :type 'string
   :group 'gams-keys)
+
+(defcustom gams-sil-expand-file-more nil
+  "*If non-nil, expand more files in GAMS-SIL.
+
+In GAMS-SIL mode, the contents of files included by $include
+commands are usually expanded. For example, 
+
+$include zzz.gms
+
+The content of zzz.gms is always expanded in GAMS-SIL.
+
+$if exist xxx.gms $include xxx.gms
+
+However, the content of xxx.gms is expanded only if
+`gams-sil-expand-file-more' is non-nil."
+  :type 'boolean
+  :group 'gams)
+
+(defcustom gams-sil-expand-batinclude t
+  "*If non-nil, GAMS-SIL mode expands files included by $batinclude.
+
+In GAMS-SIL mode, the contents of files included by $include
+commands are always expanded. But files included by $batinclude are
+not expanded if `gams-sil-expand-batinclude' is nil."
+  :type 'boolean
+  :group 'gams)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;	Non-customizable variables.
@@ -2331,6 +2363,11 @@ If you do not want to specify the lst file directory, set nil to this variable."
       (define-key map [f7] 'gams-show-identifier)
       (define-key map "\C-c\C-a" 'gams-show-identifier-list)
       (define-key map [f12] 'gams-show-identifier-list)
+      (define-key map [S-tab] 'org-global-cycle)
+      (define-key map (kbd "C-c C-: n") 'outline-next-visible-heading)
+      (define-key map (kbd "C-c C-: p") 'outline-previous-visible-heading)
+      (define-key map (kbd "C-c C-: f") 'gams-org-fold-current-tree)
+      (define-key map (kbd "C-c C-: k") 'show-branches)
 
       (define-key map gams-choose-font-lock-level-key
 	'gams-choose-font-lock-level)
@@ -2543,6 +2580,15 @@ The following commands are available in the GAMS mode:
   (gams-set-lst-filename)
   (gams-set-master-filename)
 
+  (mapc
+   'make-local-variable
+   '(outline-regexp
+     org-outline-regexp-bol
+     org-outline-regexp))
+  (setq outline-regexp gams-outline-regexp
+	org-outline-regexp-bol outline-regexp
+	org-outline-regexp outline-regexp)
+
   ;; Setting for font-lock.
   (make-local-variable 'font-lock-defaults)
   (gams-update-font-lock-keywords "g" gams-font-lock-level)
@@ -2558,13 +2604,24 @@ The following commands are available in the GAMS mode:
     (add-hook 'gams-mode-hook 'gams-add-mode-line))
   ;; Run hook
   (run-hooks 'gams-mode-hook)
-  (add-to-invisibility-spec '(gams . t))
+  (setq buffer-invisibility-spec '((gams . t) (outline . t)))
   (if (and (not (equal gams-font-lock-keywords nil))
 	   font-lock-mode)
       (font-lock-fontify-buffer)
     (if (equal gams-font-lock-keywords nil)
 	(font-lock-mode -1)))
   ) ;;; gams-mode ends.
+
+(defun gams-org-fold-current-tree ()
+  "Fold the current tree."
+  (interactive)
+  (let ((reg gams-outline-regexp))
+    (if (fboundp 'org-cycle-internal-local)
+	(when (re-search-backward reg nil t)
+	  (beginning-of-line)
+	  (org-cycle-internal-local)
+	  (message "Folded the current tree."))
+      (message "`org-cycle-internal-local' is not defined."))))
 
 (defun gams-list-to-alist (list)
   "Trasform a LIST to an ALIST."
@@ -3433,7 +3490,7 @@ Non-nil for optional argument SELECT keeps selection to the target window."
     (if gams-always-popup-process-buffer
 	(gams*showup-buffer pbuff-name t) ; popup buffer and select it.
       (set-buffer (get-buffer-create pbuff-name)))
-    (current-buffer) ;; for debug.
+    ;; (current-buffer) ;; for debug.
     (gams-ps-mode)
     (setq gams-ps-gms-buffer cur-buff)
     (erase-buffer)
@@ -5300,6 +5357,7 @@ overlay onto the gams-invisible-areas-list list"
   (unless e-offset (setq e-offset 0))
   (let ((ov (make-overlay start end)))
     (setq gams-invisible-areas-list (cons ov gams-invisible-areas-list))
+    (overlay-put ov 'evaporate t)
     (overlay-put ov 'invisible 'gams)
     (overlay-put ov 'gams 'comment)
     (overlay-put ov 'gams-s-offset s-offset)
@@ -5666,7 +5724,7 @@ and show its meaning in another window if error number is displayed."
 	       ": "))
 	error-num error-place error-mes-place error-column b-point a-point)
     ;; First search syntax error. 
-    (if (re-search-forward "\\*\\*\\*\\* [ ]+\\(\\$\\)\\([0-9]+\\)[$]?" nil t)
+    (if (re-search-forward "^\\*\\*\\*\\* [ ]+\\(\\$\\)\\([0-9]+\\)[$]?" nil t)
 	(progn
 	  (goto-char (match-beginning 1))
 	  (setq error-place (point))
@@ -5700,7 +5758,7 @@ and show its meaning in another window if error number is displayed."
 
       ;; Search another type of errors.
       (if (catch 'found
-	    (while (re-search-forward "\\*\\*\\*\\* " nil t)
+	    (while (re-search-forward "^\\*\\*\\*\\* " nil t)
 	      (progn
 		(setq b-point (line-end-position))
 		(goto-char (setq a-point (line-beginning-position)))
@@ -7951,6 +8009,8 @@ This command cannot identify aliased set identifer."
       (setq buffer-read-only nil)
       (erase-buffer)
 
+      (when font-lock-mode
+	(font-lock-mode -1))
       (gams-sil-create-list idlist mbuf)
 
       (setq gams-sil-gms-buffer mbuf)
@@ -7959,7 +8019,8 @@ This command cannot identify aliased set identifer."
     
     (goto-char (point-min))
     (forward-line (1- (gams-sil-current-line cfnum cpo)))
-    (sit-for 0)))
+    (sit-for 0)
+    ))
 
 (defun gams-sil-rescan-internal ()
   (let ((cbuf (current-buffer))
@@ -7997,6 +8058,8 @@ This command cannot identify aliased set identifer."
     (goto-char (point-min))
     (forward-line (1- cline))
     (sit-for 0)
+    (when font-lock-mode
+      (font-lock-mode -1))
     (setq buffer-read-only t)
     (message "Rescan is done.")))
 
@@ -8023,9 +8086,9 @@ This command cannot identify aliased set identifer."
    (setq gams-sil-create-alist-done t)
    (gams-sil-item-make-alist gams-sil-view-item) 
    (setq gams-sil-view-item-default (gams-sil-make-list-view-item gams-sil-view-item)))
-
-  (setq truncate-lines t)
-  (setq buffer-read-only t))
+ (setq truncate-lines t)
+ (setq font-lock-mode nil)
+ (setq buffer-read-only t))
 
 
 (defun gams-sil-item-make-alist (alist)
@@ -8070,6 +8133,7 @@ This command cannot identify aliased set identifer."
   (define-key map "h" 'gams-sil-toggle-fold-item)
   (define-key map "o" 'gams-sil-previous-tree)
   (define-key map "l" 'gams-sil-next-tree)
+  (define-key map "x" 'gams-sil-toggle-expand-file-more)
   )
 
 ;;; Menu for GAMS-SIL mode.
@@ -8099,6 +8163,7 @@ This command cannot identify aliased set identifer."
     [ "Toggle list style (sequential order / type)." gams-sil-toggle-list-style t]
     [ "Widen the window." gams-sil-widen-one-line t]
     [ "Narrow the window." gams-sil-narrow-one-line t]
+    [ "Toggle the value of `gams-sil-expand-file-more'." gams-sil-toggle-expand-file-more t]
     "--"
     "Commands in the listing by type."
     [ "Move to next tree" gams-sil-next-tree t]
@@ -8370,6 +8435,7 @@ r	Reparse the gms file
 .       Show the original position in the other window.
 s	Select viewable items.
 a	Select the combination of iewable items.
+x	Toggle the value of `gams-sil-expand-file-more'.
 ?	Show this help.
 
 * Special commands in the listing by type.
@@ -8462,20 +8528,7 @@ If PAGE is non-nil, page scroll."
       (put-text-property beg end 'face gams-comment-face))
      )))
 
-(defun gams-sil-text-color-3 (type col)
-  (let ((end (line-end-position))
-	(cpo (point))
-	beg-b beg-e)
-    (setq beg-b (+ col cpo)
-	  beg-e (+ beg-b 3))
-    (cond
-     ((equal type 'bof)
-      (put-text-property beg-b end 'face gams-sil-file-face))
-     ((equal type 'eof)
-      (put-text-property beg-e end 'face gams-sil-file-face-2))
-     )))
-
-(defun gams-sil-text-color-4 (type)
+(defun gams-sil-text-color-3 (type)
   "Color the current line."
   (let* ((str (upcase (symbol-name type)))
 	 (len (length str)))
@@ -8558,7 +8611,12 @@ SPC=view, TAB=goto, ENT=goto+hide, [q]uit, [r]escan, ?=Help
 	    (insert "\n")
 	    (forward-char -1)
 	    (beginning-of-line)
-	    (gams-sil-text-color-3 type col)
+	    (skip-chars-forward " \t")
+	    (cond
+	     ((equal type 'bof)
+	      (put-text-property (point) (line-end-position) 'face gams-sil-file-face))
+	     ((equal type 'eof)
+	      (put-text-property (point) (line-end-position) 'face gams-sil-file-face-2)))
 	    (put-text-property
 	     (line-beginning-position) (+ 1 (line-end-position)) :data ele)
 	    (goto-char (point-max)))
@@ -8639,7 +8697,7 @@ There are 2 types:
     (while idlist
       (setq ele (car idlist))
       (setq type (nth 0 ele))
-      (setq type-str (gams-sil-text-color-4 type))
+      (setq type-str (gams-sil-text-color-3 type))
       
       (cond
        ;; The first type:
@@ -8692,25 +8750,31 @@ There are 2 types:
     (gams-sil-toggle-fold-all-items-nonint gams-sil-fold-all-items-p)
     (setq buffer-read-only t))
     )
-    
-(defvar gams-sil-regexp-declaration-light
-      (concat "^[$][ ]*\\(batinclude\\|include\\)[ ]+\\|" ; 2
-	      "[^=]\\(==\\)[^=]\\|"			  ; 3
-	      "^\\([$][ ]*macro\\)[ \t]+\\|"		  ; 4
-	      "^[ \t]*\\(parameter[s]?\\|set[s]?\\|scalar[s]?\\|table\\|alias\\|acronym[s]?\\|\\(free\\|positive\\|negative\\|binary\\|integer\\|nonnegative\\)*[ \t]*variable[s]?\\|equation[s]?\\|model[s]?\\)[ \t\n(]+\\|" ; 5
-	      "\\(^$model:\\)[a-zA-Z]+" 		  ; 7
-	      ))
 
-(defvar gams-sil-regexp-declaration-temp
-      (concat gams-sil-regexp-declaration-light "\\|"
-	      "\\(^$[ ]*[s]?title[ \t]+\\)\\|" ; 8
-	      "[$][ ]*\\(set\\|setglobal\\|goto\\|label\\|call\\)[ ]+\\|" ; 9
-	      "^[ \t]*\\(solve[ \t]+\\)[a-zA-Z_]+\\|" ; 10
-	      "\\([0-9A-Za-z) \t]+[.][.]\\)[^.]\\|"   ; 11
-	      "\\(^$exit\\)\\|"			      ; 12
-	      "[$][ ]*\\(gdxin\\|gdxout\\|sysinclude\\|libinclude\\)\\|" ; 13
-	      "\\(execute_unload\\|execute_load\\)"			 ; 14
-	      ))
+(defun gams-sil-regexp-declaration-light ()
+  (setq gams-sil-regexp-declaration-light
+	(concat
+	 (if gams-sil-expand-file-more "[$]" "^[$]")
+	 "[ ]*\\("
+	 (if gams-sil-expand-batinclude "batinclude\\|" "")
+	 "include\\)[ \t]+\\|" ; 2
+	 "[^=]\\(==\\)[^=]\\|"			 ; 3
+	 "^\\([$][ ]*macro\\)[ \t]+\\|"		 ; 4
+	 "^[ \t]*\\(parameter[s]?\\|set[s]?\\|scalar[s]?\\|table\\|alias\\|acronym[s]?\\|\\(free\\|positive\\|negative\\|binary\\|integer\\|nonnegative\\)*[ \t]*variable[s]?\\|equation[s]?\\|model[s]?\\)[ \t\n(]+\\|" ; 5
+	 "\\(^$model:\\)[a-zA-Z]+"	; 7
+	 )))
+
+(defun gams-sil-regexp-declaration-temp ()
+  (setq gams-sil-regexp-declaration-temp
+	(concat gams-sil-regexp-declaration-light "\\|"
+		"\\(^$[ ]*[s]?title[ \t]+\\)\\|"				  ; 8
+		"[$][ ]*\\(set\\|setglobal\\|goto\\|label\\|call\\)[ ]+\\|" ; 9
+		"^[ \t]*\\(solve[ \t]+\\)[a-zA-Z_]+\\|"			  ; 10
+		"\\([0-9A-Za-z) \t]+[.][.]\\)[^.]\\|"			  ; 11
+		"\\(^$exit\\)\\|"						  ; 12
+		"[$][ ]*\\(gdxin\\|gdxout\\|sysinclude\\|libinclude\\)\\|"  ; 13
+		"\\(execute_unload\\|execute_load\\)"			  ; 14
+		)))
 
 (defun check-sil-regexp ()
   (interactive)
@@ -8738,13 +8802,27 @@ There are 2 types:
     num))
 
 (defun gams-sil-regexp-update ()
+  (gams-sil-regexp-declaration-light)
+  (gams-sil-regexp-declaration-temp)
   (setq gams-sil-regexp-declaration
 	(concat
 	 "^[ \t]*\\(display[ \t]+\""
 	 (regexp-quote gams-special-comment-symbol)
 	 "[ \t]*\\)\\|"
 	 gams-sil-regexp-declaration-temp)))
-(gams-sil-regexp-update) 
+
+(defun gams-sil-toggle-expand-file-more ()
+  "Toggle the value of `gams-sil-expand-file-more'."
+  (interactive)
+  (if gams-sil-expand-file-more
+      (progn (setq gams-sil-expand-file-more nil)
+	     (gams-sil-rescan))
+    (setq gams-sil-expand-file-more t)
+    (gams-sil-rescan)
+    )
+  (if gams-sil-expand-file-more
+      (message "Set t to `gams-sil-expand-file-more'.")
+    (message "Set nil to `gams-sil-expand-file-more'.")))
 
 
 (defun gams-sil-add-file-to-list (file)
@@ -8869,8 +8947,8 @@ Return the new file number."
 
 (defvar gams-sil-buffers-to-kill nil)
 
-(defun gams-sil-get-filename (file)
-  (let ((ofname (expand-file-name file))
+(defun gams-sil-get-filename (file &optional dir)
+  (let ((ofname (expand-file-name file dir))
 	fname)
     (if (file-exists-p ofname)
 	(setq fname (expand-file-name ofname))
@@ -8918,7 +8996,14 @@ Return the new file number."
 		    (gams-sil-return-file-num mfile) 0 0 mfile
 		    (set-marker (make-marker) 0)
 		    ) idstr)
-	(setq idstr (gams-sil-get-identifier-alist idstr (current-buffer)))
+	(condition-case err
+	    (setq idstr (gams-sil-get-identifier-alist idstr (current-buffer)))
+	  (error
+	   (setq gams-sil-expand-file-more nil)
+	   (setq idstr (gams-sil-get-identifier-alist idstr (current-buffer)))
+	   (message "nil is set to `gams-sil-expand-file-more' because an error occurs.")
+	   (sit-for 1.0)
+	   ))
 	(push (list 'eof
 		    (gams-sil-return-file-num mfile) 0 (line-end-position) mfile
 		    (set-marker (make-marker) (line-end-position))
@@ -8950,11 +9035,12 @@ LIGHT is t if in light mode.
 		  gams-sil-regexp-declaration))
 	(case-fold-search t)
 	(co 0)
-	co2 mfile cbuf fnum next-fnum nfile-temp next-file mkr
-	next-buf po-beg po-end type match-decl)
+	co2 mfile mdir cbuf fnum next-fnum nfile-temp next-file mkr
+	next-buf po-beg po-end type match-decl flist)
     (catch 'found
       (save-excursion
 	(setq mfile (buffer-file-name mbuf) ; Master file buffer
+	      mdir (file-name-directory mfile) ; Master file directory
 	      cbuf (current-buffer)	    ; Current buffer (parsed buffer)
 	      fnum (gams-sil-return-file-num (buffer-file-name) mbuf)) ; File number of current
 					; buffer
@@ -8978,58 +9064,67 @@ LIGHT is t if in light mode.
 
 		 ;; (bat)include.
 		 ((match-beginning 2)
-		  (when (not (gams-check-line-type))
-		    (let (beg end ele dol)
-		      (setq beg (1+ (match-beginning 0)) ; 1+ for marker
-			    end (1+ beg))
-		      (goto-char (match-end 2))
-		      (setq dol (gams*buffer-substring (1- beg) (point))) ; 1- for marker
-		      (skip-chars-forward " \t")
-		      (setq ele (gams-sil-get-alist-fil fnum dol beg))
-		      (setq mkr (nth 5 ele))
-		      (push ele idstruct)
-
-		      ;; Included file.
-		      (setq nfile-temp (nth 4 ele))
-		      
-		      (when (setq next-file (gams-sil-get-filename nfile-temp))
-			(set-buffer
-			 ;; switch-to next-buf.
-			 (setq next-buf (gams-sil-get-file-buffer-force next-file)))
-			(if (string-match "gen" (file-name-extension (buffer-file-name)))
-			    (kill-buffer (current-buffer))
-			  (when (not (equal mode-name "GAMS"))
-			    (gams-mode))
-
-			  ;; Switch-to master file buffer.
-			  (set-buffer mbuf)
-			  (if (rassoc next-file gams-file-list)
-			      (setq next-fnum (gams-sil-return-file-num next-file))
-			    (setq next-fnum (gams-sil-add-file-to-list next-file)))
-			  (push  (list 'bof next-fnum fnum beg next-file
-				       ;;(set-marker (make-marker) beg)
-				       mkr
-				       ) idstruct)
-			  (setq mkr nil)
-
-			  ;; Switch-to the included file buffer.
-			  (set-buffer next-buf)
-			  (setq idstruct (gams-sil-get-identifier-alist idstruct mbuf))
-			  
-			  (set-buffer cbuf)
-			  (push (list 'eof next-fnum fnum end next-file
-				      (set-marker (make-marker) end)
-				      ) idstruct)))
-
-		      ;; Back to the current buffer.
-		      (set-buffer cbuf)
-		      (goto-char end)
-		      )))
+		  (let (beg end ele dol)
+		    (setq beg (1+ (match-beginning 0)) ; 1+ for marker
+			  end (1+ beg))
+		    (setq po-end (match-end 2))
+		    (when (and (not (gams-check-line-type))
+			       (not (gams-in-quote-p-extended)))
+		      (goto-char (1- beg))
+		      (char-to-string (char-before)) ;; for debug
+		      (if (looking-back "[ \t\n\f]")
+			  (progn
+			    (setq dol (gams*buffer-substring (1- beg) po-end)) ; 1- for marker
+			    (goto-char po-end)
+			    (skip-chars-forward " \t")
+			    (setq ele (gams-sil-get-alist-fil fnum dol beg))
+			    (setq mkr (nth 5 ele))
+			    (push ele idstruct)
+			    
+			    ;; Included file.
+			    (setq nfile-temp (nth 4 ele))
+			    
+			    (when (and (setq next-file (gams-sil-get-filename nfile-temp mdir))
+				       (not (member next-file flist)))
+			      (setq flist (cons next-file flist))
+			      (set-buffer
+			       ;; switch-to next-buf.
+			       (setq next-buf (gams-sil-get-file-buffer-force next-file)))
+			      (if (string-match "gen" (file-name-extension (buffer-file-name)))
+				  (kill-buffer (current-buffer))
+				(when (not (equal mode-name "GAMS"))
+				  (gams-mode))
+				
+				;; Switch-to master file buffer.
+				(set-buffer mbuf)
+				(if (rassoc next-file gams-file-list)
+				    (setq next-fnum (gams-sil-return-file-num next-file))
+				  (setq next-fnum (gams-sil-add-file-to-list next-file)))
+				(push  (list 'bof next-fnum fnum beg next-file
+					     ;;(set-marker (make-marker) beg)
+					     mkr
+					     ) idstruct)
+				(setq mkr nil)
+				
+				;; Switch-to the included file buffer.
+				(set-buffer next-buf)
+				(setq idstruct (gams-sil-get-identifier-alist idstruct mbuf))
+				
+				(set-buffer cbuf)
+				(push (list 'eof next-fnum fnum end next-file
+					    (set-marker (make-marker) end)
+					    ) idstruct)))
+			    
+			    ;; Back to the current buffer.
+			    (set-buffer cbuf)
+			    (goto-char end))
+			(goto-char po-end)))))
 		 ;; Function definition (==)
 		 ((match-beginning 3)
 		  (goto-char (match-end 3))
 		  (if (gams-check-line-type nil t t)
-		      (forward-line 1)
+		      ;; (forward-line 1)
+		      (forward-char 1)
 		    (push (gams-sil-get-alist-func fnum) idstruct)))
 		 ;; $macro.
 		 ((match-beginning 4)
@@ -9082,8 +9177,9 @@ LIGHT is t if in light mode.
 		 ;; equation definition (..)
 		 ((and (not light) (match-beginning 11))
 		  (goto-char (match-end 11))
-		  (current-buffer)	; for debug.
-		  (when (not (gams-check-line-type nil t t))
+		  ;; (current-buffer)	; for debug.
+		  (when (and (not (gams-check-line-type nil t t))
+			     (not (gams-in-quote-p)))
 		    (push (gams-sil-get-alist-def fnum) idstruct)))
 
 		 ;; $exit
@@ -10116,6 +10212,7 @@ if prev is non-nil, move up after toggle."
 
 (defun gams-sil-invisible-item (beg end)
   (let ((ov (make-overlay beg end)))
+    (overlay-put ov 'evaporate t)
     (overlay-put ov 'invisible 'gams-sil)
     (overlay-put ov 'gams-sil t)))
 
@@ -11430,7 +11527,8 @@ DEF is t if declaration part exists."
 
 (defun gams-sid-create-tree-buffer (cfnum cpo flist fst)
   (let ((tbuf (get-buffer-create gams-sid-tree-buffer)))
-    (set-buffer tbuf)
+    (set-buffer tbuf) 
+    ;; (switch-to-buffer tbuf) ;; for debug
     (gams-sid-tree-mode)
     (gams-sid-create-tree-buffer-sub cfnum cpo flist fst)
     ))
@@ -11490,10 +11588,12 @@ CPO: Original point."
 
       (cond
        ((equal beg 1)
-	(indent-to col)
+	;; (indent-to col)
+	(insert (make-string col ? ))
 	(insert (format "%s\n" (file-name-nondirectory fname))))
        ((not (equal beg 0))
-	(indent-to (+ col col-aug))
+	;; (indent-to (+ col col-aug))
+	(insert (make-string (+ col col-aug) ? ))
 	(insert (format "%s\n" (file-name-nondirectory fname-old))))
 	)
 
@@ -11501,7 +11601,8 @@ CPO: Original point."
 		    (>= cpo beg)
 		    (<= cpo end)))
 	  (progn
-	    (indent-to col)
+	    ;; (indent-to col)
+	    (insert (make-string col ? ))
 	    (insert (concat (make-string col-aug ? ) "|\n"))
 	    (forward-char -1)
 	    (setq part (1+ part))
@@ -11511,7 +11612,8 @@ CPO: Original point."
 	    (forward-line 1)
 	    )
 	
-	(indent-to col)
+	;; (indent-to col)
+	(insert (make-string col ? ))
 	(insert (concat (make-string col-aug ? ) "|\n"))
 	(forward-char -1)
 	(setq part (1+ part))
@@ -11520,7 +11622,8 @@ CPO: Original point."
 	(setq tree (cons (list part fnum beg (1- cpo)) tree))
 	(forward-line 1)
 
-	(indent-to col)
+	;; (indent-to col)
+	(insert (make-string col ? ))
 	(setq opos "[The original position]")
 	(put-text-property 0 (length opos) 'face face opos)
 	(insert (concat (make-string col-aug ? ) opos "\n"))
@@ -11532,7 +11635,8 @@ CPO: Original point."
 	(setq tree (cons (list part fnum cpo cpo) tree))
 	(forward-line 1)
 
-	(indent-to col)
+	;; (indent-to col)
+	(insert (make-string col ? ))
 	(insert (concat (make-string col-aug ? ) "|\n"))
 	(forward-char -1)
 	(setq part (1+ part))
@@ -15313,6 +15417,7 @@ If PAGE is non-nil, page scroll."
 
 (defun gams-lxi-invisible-item (beg end)
   (let ((ov (make-overlay beg end)))
+    (overlay-put ov 'evaporate t)
     (overlay-put ov 'invisible 'gams-lxi)
     (overlay-put ov 'gams-lxi t)))
 
@@ -16830,8 +16935,15 @@ is provided by COLUMN."
   (interactive)
   (if column
       (gams-indent-function column)
-    (beginning-of-line)
-    (gams-indent-function nil)))
+    (if (save-excursion
+	  (beginning-of-line)
+	  (looking-at outline-regexp))
+	(progn
+	  (gams-indent-function nil)
+	  (when (fboundp 'org-cycle)
+	    (org-cycle)))
+      (beginning-of-line)
+      (gams-indent-function nil))))
 
 (defun gams-indent-function (&optional column unindented-ok)
   "Indent function in GAMS mode."
@@ -17590,6 +17702,7 @@ static unsigned char gams_mark_bits[] = {
    'gams-user-comment
    'gams:process-command-name
    'gams:process-command-option
+   'gams-outline-regexp
    )
   )
 

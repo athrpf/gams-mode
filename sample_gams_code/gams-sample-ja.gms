@@ -1,15 +1,14 @@
 $title GAMS mode for Emacsの使い方を説明するためのサンプルプログラム
-display "com: GAMS mode for Emacsの使い方を説明するためのサンプルプログラム．";
 ** gams-lst-file: .\doc\lst-sample.lst
 $ontext
-Time-stamp:     <2012-01-28 20:45:05 Shiro Takeda>
+Time-stamp:     <2012-09-05 22:45:46 Shiro Takeda>
 Filename:       "gams-sample-ja.gms"
 Author:         Shiro Takeda
 First-written:  <2001/08/13>
 
 注：
 
-  * gams.el version 3.5 用の説明．
+  * gams.el version 4.0 用の説明．
 
   * Emacs (or Meadow) の操作の基本的なことについては，Emacs のメニューのヘル
     プ→ Emacs tutorial を読んでください．
@@ -504,7 +503,7 @@ GAMS では行頭に * を付けることでコメントアウトする (コメント行にする) ことが
 
 $offtext
 
-$include include-sample.gms
+$include ./include/include-sample.gms
 
 * ---------------------
 $stitle		Font-lock (色付け).
@@ -920,10 +919,10 @@ GAMS-OUTLINE mode by typing C-cC-i.
 
 $offtext
 display "";
-display "com: これは gams-sample.gms ";
+display "@ これは gams-sample.gms ";
 display "";
 display "";
-display "com: GAMS-OUTLINE mode は↓のような表示をできる．";
+display "@ GAMS-OUTLINE mode は↓のような表示をできる．";
 display "";
 
 set     iter    Iteration index                / iter1*iter20 /;

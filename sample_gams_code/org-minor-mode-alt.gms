@@ -1,18 +1,29 @@
-*#!c:/GAMS/GAMS/gams.exe gams-sample.gms ll=0 lo=3 pw=130 ps=0
-$title A sample file for learning how to use GAMS mode for Emacs.
+$title	A sample file for showing Org-mode feature in GAMS mode
+display "@ A sample file for showing Org-mode feature in GAMS mode";
 $ontext
-Time-stamp:     <2012-02-16 11:36:21 Shiro Takeda>
-Filename:       "gams-sample.gms"
-Author:         Shiro Takeda
-First-written:  <2001/08/13>
+Time-stamp: 	<2012-09-08 19:52:44 Shiro Takeda>
+First-written:	<2012/07/25>
+
+-----------------------------------------------------------------------------
+[Note] ----------------------------------------------------------------------
+
+To use this file, add the following line to your .emacs.el (init.el).
+
+    (setq gams-outline-regexp "[ \t]*display \"@+[ \t]")
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
 $offtext
+display "@ Keybindings";
+
+*	TAB: org-cycle
+*	Shift + TAB: org-global-cycle
 
 *	----------------------------------------------------------------------
-$stitle	Specification of lst file or lst file directory (sample code):
+display "@ Specification of lst file or lst file directory (sample code):";
+
 $ontext
-To activiate lst file specification, remove one of asterisks at the
-beginning of the line.
-$offtext
 
 ** gams-lst-file: .\lst\lst-sample.lst	  	
 *	The above code means that lst file -> .\lst\sample.lst:
@@ -63,8 +74,7 @@ load-path setting).
 
 $offtext
 *        ----------------------------------------------------------------------
-$stitle		Basic usage. 
-*        ----------------------------------------------------------------------
+display "@ Basic usage. ";
 $ontext
 
 First, try to run GAMS on this file.  Type `C-cC-t', then you see the
@@ -201,16 +211,13 @@ jump to the GMS file.
 
 $offtext
 *        ----------------------------------------------------------------------
-$stitle		Other commands in GAMS mode.
-*        ----------------------------------------------------------------------
+display "@ Other commands in GAMS mode.";
 
 * ---------------------------------------------------------
-$stitle		Process handling.
-* ---------------------------------------------------------
+display "@ Process handling.";
+
+display "@@ [Running GAMS and editing a command line.]";
 $ontext
-
-[Running GAMS and editing a command line.]
-
 As described above, you can start GAMS process by typing `C-cC-ts' (or F9).
 Moreover, if you attach the universal argument (i.e. C-u), you are able to
 edit the command line before starting process.
@@ -244,10 +251,11 @@ line of this file.
 When you evoke GAMS on this file next time, this line is passed to the shell
 as the command line.  If you want to restore the default command line, just
 delete this line.
+$offtext
 
+display "@@ [Specify a command line by *#! notation]";
 
-[Specify a command line by *#! notation]
-
+$ontext
 When there is a line beginning with *#! on the first line in a GMS file,
 GAMS mode uses its content as a command line.  For example, suppose that
 you write the following statement in the first line
@@ -263,10 +271,10 @@ is executed as a command line.  This is a function like #!/usr/bin/perl or
 `gams:process-command-name' and `gams:process-command-option' and it is
 common to all GMS files. But when you want to use a different command line
 for a specific file, use this *#! notation.
+$offtext
 
-
-[Kill (stop) the GAMS process.]
-
+display "@@ [Kill (stop) the GAMS process.]";
+$ontext
 If you type `k' when a GAMS process is running, you can kill (stop) the
 process.  Uncomment the following programs and try them.
 
@@ -295,9 +303,9 @@ loop(o,
 display yy;
 
 $offtext
-$ontext
 
-[Change command line options.]
+display "@@ [Change command line options.]";
+$ontext
 
 If you type `o' in the process menu, you can change and register a new
 command line option combiantion.  Registered option combiantion is stored in
@@ -306,19 +314,29 @@ variable `gams-statement-file'.
 
 The default option combiantion is determinied by the value of
 `gams:process-command-option'.
+$offtext
 
+display "@@ [Change gams command.]";
 
-[Change gams command.]
-
+$ontext
 If you type `c' in the process menu, you can change (and register)
 alternative GAMS commands. You can set the default GAMS pcommand by the
 value of `gams:process-command-name'. But you may often want to use gams.exe
 of different versions. In such cases, register other gams.exe by this menu.
 
 $offtext
+
+display "@@@ test";
+
+* The third level.
+
+display "@@@ test2";
+
+* The third level.
+
 * ---------------------------------------------------------
-$stitle		Specify the place and name of the LST file.
-* ---------------------------------------------------------
+display "@ Specify the place and name of the LST file.";
+
 $ontext    
 
 When you run GAMS on a gms file, GAMS creates the LST file with the same
@@ -358,8 +376,7 @@ stored as ".\lst\gams-sample.lst".
 
 $offtext
 * ---------------------------------------------------------
-$stitle		GAMS statement completions.
-* ---------------------------------------------------------
+display "@ GAMS statement completions.";
 
 $ontext
 
@@ -432,8 +449,8 @@ $offtext
 * solve cost_min using lp minimizing TCOST;
 
 * ---------------------------------------------------------
-$stitle		Automatic registration of a new statement.
-* ---------------------------------------------------------
+display "@ Automatic registration of a new statement.";
+
 $ontext
 
 If you are to insert a statement not registered by default, you can register
@@ -462,8 +479,8 @@ by yourself.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Quotation and parenthesis.
-* ---------------------------------------------------------
+display "@ Quotation and parenthesis.";
+
 $ontext
 
 Type ', ", or (, and the corresponding ', ", and ) will be automatically
@@ -475,9 +492,7 @@ the universal argument to `(', then only `(' is inserted.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Insert user defined comment template.
-* ---------------------------------------------------------
-
+display "@ Insert user defined comment template.";
 $ontext
 
 To write a gms file that other people (or yourself) can understand easily,
@@ -496,8 +511,8 @@ Please see the help of `gams-user-comment'.
 $offtext
 
 * ---------------------------------------------------------
-$stitle 	GAMS-TEMPLATE.
-* ---------------------------------------------------------
+display "@ GAMS-TEMPLATE.";
+
 $ontext
 
 GAMS-TEMPLATE mode (binded to `C-cC-e' by default) enables you to handle
@@ -512,8 +527,8 @@ commands in GAMS-TEMPLATE mode, type `h' in the *Template List* buffer.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Fill paragraph.
-* ---------------------------------------------------------
+display "@ Fill paragraph.";
+
 $ontext
 
 As in other major modes, filling paragraph works in GAMS mode.  Put the
@@ -541,8 +556,8 @@ cursor in the next commented out paragraph and type `M-q'.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Commenting out
-* ---------------------------------------------------------
+display "@ Commenting out";
+
 $ontext
 
 You can comment out the region with *.  Select a region and type C-cC-;,
@@ -552,11 +567,10 @@ these commands by yourself.
 
 $offtext
 
-$include include-sample.gms
+$include ./include/include-sample.gms
 
 * ---------------------------------------------------------
-$stitle		Font-lock (coloring).
-* ---------------------------------------------------------
+display "@ Font-lock (coloring).;";
 $ontext
 
 GAMS mode for Emacs supports various coloring (font-lock in Emacs
@@ -612,10 +626,9 @@ fix them.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Display the declaration part of an identifier.
-* ---------------------------------------------------------
-$ontext
+display "@ Display the declaration part of an identifier.;";
 
+$ontext
 While you are reading or editing a GAMS program, you may often go back to
 the declaration part of an identifier so as to see its definition.  In such
 a case, you could use, for example, `isearch-backward' command or something.
@@ -655,7 +668,7 @@ files.
 
 The identifier "ene", "out", "util", "com", "sec", "m" and "n"" below are
 declared in the subroutine file "include-sample.gms" and
-"include-sample-2.gms".  Type F7 on each identifier.
+"include-sample-2.gms" in "include" directory.  Type F7 on each identifier.
 
 $offtext
 display ene; 		# Type F7 on the identifier ene
@@ -681,20 +694,15 @@ identifier that you want to search.  Try "C-uC-cC-.".
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Display the list of identifiers.
-* ---------------------------------------------------------
+display "@ Display the list of identifiers.;";
 $ontext
-
 `gams-show-identifier-list' (binded to `C-cC-a' by default) displays the
 list identifiers defined in the current file.  To learn how to use this
 command, try C-cC-a and type `?'.
-
-
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Commands on a ontext-offtext pair.
-* ---------------------------------------------------------
+display "@ Commands on a ontext-offtext pair.;";
 $ontext
 
 `gams-insert-on-off-text' (binded to `C-cC-c' by default) inserts an
@@ -716,8 +724,7 @@ display "Try to type C-cC-c, C-uC-cC-c, C-cC-g, C-cM-c, and C-cM-g",
 	"on a ontext or offtext!";
 
 * ---------------------------------------------------------
-$stitle		Align block.
-* ---------------------------------------------------------
+display "@ Align block.;";
 
 $ontext
 You can align table and other blocks according to GAMS systax by
@@ -777,10 +784,8 @@ display abc;
 $offtext
 
 * ---------------------------------------------------------
-$stitle		Automatic indentation.
-* ---------------------------------------------------------
+display "@ Automatic indentation.;";
 $ontext
-
 You can indent GAMS programs accordint to GAMS syntax.
 
 M-C-\        =       Indent region.  Specify region and type M-C-\.
@@ -870,10 +875,8 @@ semicolon (;) although it may not be necessarily required in GAMS syntax.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		View manual.
-* ---------------------------------------------------------
+display "@ View manual.;";
 $ontext
-
 In GAMSIDE, you can view GAMS pdf manuals (HELP => DOC).  The same kind of
 command is available in GAMS mode.  The command name is `gams-view-docs' and
 it is binded to `C-cC-m' by default.
@@ -885,28 +888,8 @@ See the explanation of two variables.
 $offtext
 
 * ---------------------------------------------------------
-$stitle		GAMS model library.
-* ---------------------------------------------------------
+display "@ Inline and end-of-line comments;";
 $ontext
-
-GAMS provides the model library. By `gams-model-library' (binded to C-cC-z),
-you can view models in GAMS model library from Emacs.  To use this, you must
-set the GAMS system directory to the variable `gams-system-directory'.
-
-To use `gams-model-library', you need to set the proper value to the
-variable `gams-system-directory'. Note that this command works only in GAMS
-of ver.22.8 or later.
-
-To extract files from the library, this command uses `gamslib.exe'.  You
-need to set the proper value to the variable `gams-gamslib-command'.
-
-$offtext
-
-* ---------------------------------------------------------
-$stitle		Inline and end-of-line comments
-* ---------------------------------------------------------
-$ontext
-
 You can insert the inline and end-of-line comment by `gams-comment-dwim'
 and `gams-comment-dwim-inline' (binded to M-; and C-cM-; respectively).
 
@@ -943,17 +926,31 @@ parameter
 ;
 
 * ---------------------------------------------------------
-$stitle		Hide (or show) comment regions.
-* ---------------------------------------------------------
+display "@ Hide (or show) comment regions.;";
 $ontext
-
 You can hide and show comment regions by C-cC-h.
 
 $offtext
-*        ----------------------------------------------------------------------
 
-$stitle        Other commands in GAMS LST mode.
+* ---------------------------------------------------------
+display "@ GAMS model library.;";
+$ontext
+
+GAMS provides the model library. By `gams-model-library' (binded to C-cC-z),
+you can view models in GAMS model library from Emacs.  To use this, you must
+set the GAMS system directory to the variable `gams-system-directory'.
+
+To use `gams-model-library', you need to set the proper value to the
+variable `gams-system-directory'. Note that this command works only in GAMS
+of ver.22.8 or later.
+
+To extract files from the library, this command uses `gamslib.exe'.  You
+need to set the proper value to the variable `gams-gamslib-command'.
+
+$offtext
+
 *        ----------------------------------------------------------------------
+display "@ Commands in GAMS LST mode.;";
 $ontext
 
 If you type `M-x help ENTER' and `m' in a LST file buffer, you can read
@@ -1006,9 +1003,7 @@ Try each command by yourself.
 
 $offtext
 *        ----------------------------------------------------------------------
-
-$stitle        GAMS-OUTLINE mode.
-*        ----------------------------------------------------------------------
+display "@ GAMS-OUTLINE mode.;";
 $ontext
 
 The GAMS-OUTLINE enables you to outline important components in the LST
@@ -1023,12 +1018,6 @@ to the LST file and type `o').  Or you can directly move to the
 GAMS-OUTLINE mode by typing C-cC-i (or F12).
 
 $offtext
-display "";
-display "com: This is gams-sample.gms";
-display "";
-display "";
-display "com: The GAMS-OUTLINE mode is like this!";
-display "";
 
 set     iter    Iteration index                / iter1*iter20 /;
 
@@ -1060,7 +1049,14 @@ display m, n;
 
 * $show
 
+
+
+
+
+
+
 * --------------------
 * Local Variables:
-* fill-column: 76
+* mode: gams
+* fill-column: 80
 * End:

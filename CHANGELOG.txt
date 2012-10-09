@@ -1,10 +1,126 @@
 Author: Shiro Takeda
 Maintainer: Shiro Takeda
-Time-stamp: <2012-06-02 23:44:42 Shiro Takeda>
+Time-stamp: <2012-09-08 20:16:00 Shiro Takeda>
 ----------------------------------------------------
 
 Change logs of GAMS mode.
 ----------------------------------------------------
+
+Version 4.0 (2012-09-08)
+----------------------------------
+
+* Made several changes on GAMS-SIL mode.
+
+  We often include the same file many times in a program. For example,
+  supose that a GAMS program includes the following codes.
+
+  $batinclude aggr vst i r vst_
+  $batinclude aggr vtwr i j r s vtwr_
+  $batinclude aggr vom g r vom_
+
+  In this code, aggr.gms is included repeatedly. In the previous GAMS-SIL
+  model, the content of aggr.gms is expanded repeatedly in GAMS-SIL
+  buffer. But in the new gams.el, aggr.gms is expanded only once (only
+  first time).
+
+* Added a new new function `gams-sil-toggle-expand-file-more' and a lisp
+  variable `gams-sil-expand-file-more' (the default value is nil).
+
+  In GAMS-SIL mode, the contents of files included by $include commands
+  are usually expanded. For example, if your program includes the
+  following code:
+
+  $include zzz.gms
+
+  then, the content of zzz.gms above is always expanded in
+  GAMS-SIL. However, if the file is included conditionally like
+
+  $if exist xxx.gms $include xxx.gms
+  $if %scenario%="bau" $include xxx.gms
+
+  the content of xxx.gms is not expanded by default.
+
+  If you want to expand the content of conditionally inluced files, type
+  "x" in GAMS-SIL buffer. This evokes `gams-sil-toggle-expand-file-more'
+  command.
+
+  If you always want to expand the content of conditionally inluced files,
+  then set non-nil to the lisp variable `gams-sil-expand-file-more'.
+
+  
+* Added the new lisp variable `gams-sil-expand-batinclude' (default value is t).
+
+  In GAMS-SIL mode, the contents of files included by $include commands
+  are always expanded. But files included by $batinclude are not expanded
+  if `gams-sil-expand-batinclude' is nil.
+
+* Changed the default value of `gams-special-comment-symbol' from "com:"
+  to "@".  This is the string to specify the special comment like
+
+  display "@ This is the special comment line";
+
+  The special comment line is used for headlines in GAMS-SIL mode and
+  GAMS-OUTLINE mode.
+
+* Added outline representation like Org-mode (or outline mode). You can
+  only show headlines of a GAMS program.
+
+  By default, lines starting with *@ are regarded as headlines.
+
+  *@ 	The top level headline
+  *@@ 	Second level
+        text text
+  *@@@ 	Third level
+        text text
+  *@ 	Another top level headline
+
+  You can change outline representation by the following two commands:
+
+  + `org-cycle' (binded to TAB key)
+  + `org-global-cycle' (binded to Shift+TAB key).
+
+  `org-cycle' command works only on headlines and toggles hide/show the
+  body of programs. `org-global-cycle' toggles hide/show entire program.
+
+  Open a sample file "org-minor-mode.gms" and try TAB and Shift+TAB.
+
+  This feature uses codes in Org-mode. So if you want to use this feature,
+  Org-mode must be installed (The recent Emacs has Org-mode by
+  default). In addition, note that this command may depend on the version
+  of Org-mode. I test in Org-mode of 7.8.11.
+
+  [How to change symbols for headlines]
+
+  In the default setting, "*@" is used as symbols to represent
+  headlines. This is determined by the lisp variable
+  `gams-outline-regexp'. This variable specifies the regular expressions
+  of the symbol used to represent headlines and its default value is 
+
+  "\\*@+[ \t]"
+
+  If you change the value of this variable, you can change symbols for
+  headlines. For example, add the following expression to your init.el
+  file
+
+  (setq gams-outline-regexp "[ \t]*display \"@+[ \t]")
+  
+  And open "org-minor-mode-alt.gms".
+  
+
+  [Other commands for outline handling]
+
+  + "C-cC-:n" -> Move to the next headlines (`outline-next-visible-heading').
+  + "C-cC-:p" -> Move to the previous headlines (`outline-previous-visible-heading').
+  + "C-cC-:f" -> Fold the current tree (`gams-org-fold-current-tree').
+  + "C-cC-:k" -> Show branches (`show-branches').
+  
+
+* Changed the default indent number from 8 to 4.
+
+* Changed the name of sample setting file from "dot-emacs-sample" to
+  "setting-sample.el".
+
+
 
 Version 3.6.6 (2012-06-02)
 ----------------------------------

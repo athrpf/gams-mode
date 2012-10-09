@@ -1,7 +1,7 @@
 $title	A sample program for GAMS-OUTLINE mode.
-display "com: A sample program for GAMS-OUTLINE mode.";
+display "@ A sample program for GAMS-OUTLINE mode.";
 $ontext
-Time-stamp:	<2011-12-31 13:10:06 Shiro Takeda>
+Time-stamp:	<2012-07-30 14:17:41 Shiro Takeda>
 Filename:	outline-sample.gms
 Author:		Shiro Takeda
 First-written:	<2001/10/26>
@@ -19,12 +19,12 @@ First-written:	<2001/10/26>
 $offtext
 
 display "";
-display "com: This file is written to show how to use the GAM-OUTLINE mode.";
+display "@ This file is written to show how to use the GAM-OUTLINE mode.";
 display "";
 display "Type `?' for help!";
 display "";
 display "";
-display "com: Basic explanation and usage.";
+display "@ Basic explanation and usage.";
 display "";
 
 *	----------------------------------------------------------------------
@@ -81,18 +81,18 @@ display "Try each command by yourself.	See the help for other keybindings.";
 
 *	----------------------------------------------------------------------
 *	If you want to display a special comment line in a GAMS-OL mode buffer,
-*	use the statement display with "com:" like this:
+*	use the statement display with "@" like this:
 display "";
-display "com: The line starting with COM like this line is a special comment line.";
+display "@ The line starting with COM like this line is a special comment line.";
 display ""
-display "To create a special comment line, use the display statement with com:";
+display "To create a special comment line, use the display statement with @";
 display "See the sample gms file.";
 
 *	----------------------------------------------------------------------
 *	Example 1.
 *	----------------------------------------------------------------------
 display "";
-display "com: Example 1: A simple example.";
+display "@ Example 1: A simple example.";
 display "";
 
 set
@@ -120,7 +120,7 @@ display "";
 *	Example 2.
 *	----------------------------------------------------------------------
 display "";
-display "com: Example 2: Mark an item and view two items simultaneously.";
+display "@ Example 2: Mark an item and view two items simultaneously.";
 display "";
 display "Type `m' (mark) on a line, for example, PAR  a above.";
 display "and move to ther line, for example, here below";
@@ -140,7 +140,7 @@ display "";
 *	Example 3.
 *	----------------------------------------------------------------------
 display "";
-display "com: Example 3: Solve the core and periphery model.  Select viewable items.";
+display "@ Example 3: Solve the core and periphery model.  Select viewable items.";
 display "";
 display "In this example, various items are displayed,"
 display "- VAR, EQU, PAR, SET, SUM, OTH, LOO, VRI, COM."
@@ -248,7 +248,7 @@ parameters
 
 *	----------------------------------------------------------------------
 *	Loop.
-display "com: Loop starts here.";
+display "@ Loop starts here.";
 
 loop(tc,
     count2 = (ord(tc) - 1)/(card(tc) - 1);
@@ -305,7 +305,7 @@ display "Show the results from loop. ", log;
 *	----------------------------------------------------------------------
 display "";
 display "";
-display "com: Example 4: Vector variable";
+display "@ Example 4: Vector variable";
 display "";
 display "";
 
@@ -383,7 +383,7 @@ m2_1.iterlim = 2000;
 
 *	----------------------------------------------------------------------
 *	Increase the endowment.
-display "com: Increase the endowment.";
+display "@ Increase the endowment.";
 
 set	sce	/ sce1*sce10 /;
 parameter
@@ -400,7 +400,7 @@ $include M2_1.GEN
 );
 display utility;
 
-display "com: Program ends here.";
+display "@ Program ends here.";
 
 
 

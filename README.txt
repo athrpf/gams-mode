@@ -1,6 +1,6 @@
 Author:  Shiro Takeda
 Maintainer:  Shiro Takeda
-Time-stamp:  <2011-10-22 16:57:57 Shiro Takeda>
+Time-stamp:  <2012-09-08 19:27:03 Shiro Takeda>
 
 This package offers the Emacs lisp program for using the numerical
 software GAMS in Emacs (GAMS mode for Emacs).
@@ -179,14 +179,14 @@ CHANGELOG.txt		Change log file.  If you want to know changes and
 			newly added functions, please read it.
 BUGS_PROBLEMS.txt	Known bugs and problems
 gams.el			The main lisp program.
-dot-emacs-sample	A sample file for setting.
+setting-sample.el	A sample file for setting.
+gams-template.txt	A sample file of templates.
+
+sample_gams_code	The foder of sample gams files.
 gams-sample.gms		A sample file to show how to use GAMS mode for Emacs.
 gams-sample-ja.gms	A sample file to show how to use GAMS mode for Emacs (in Japanese)
-include-sample.gms	A sample file that is called from gams-sample.gms.
-include-sample-2.gms	A sample file that is called from gams-sample.gms.
 outline-sample.gms	A sample file to show how to use GAMS-OUTLINE mode.
 outline-sample-ja.gms	A sample file to show how to use GAMS-OUTLINE mode (in Japanese)
-gams-template.txt	A sample file of templates.
 
 doc			Document folder
 refcard-gams.pdf	Referece card of keybindins.
@@ -201,25 +201,23 @@ user of Emacs, I recommend you to read the web site such as
 
 "~/"
 
-This is Unix terminology rather than Emacs'.  This represents a user's
-HOME directory.  A user's HOME directory means the directory (folder)
-where his configuration files are placed.  If you are MS Windows
-2000/XP/VISTA user, it is set to your folder under Documents and Settings.
-If you want to know to which directory your home directory is set,
-evaluate (getenv "HOME") in the *scratch* buffer on Emacs.  You can set
-your HOME directory by the environemtal variable HOME.  If you are MS
-Window 2000/XP/VISTA user, use control panel.
+This is Unix terminology rather than Emacs'. This represents a user's HOME
+directory. A user's HOME directory means the directory (folder) where his
+configuration files are placed. If you are MS Windows VISTA/7 user, the
+default HOME directory is set to "c:\Users\username\AppData\Roaming". If
+you want to know to which directory your home directory is set, evaluate
+(getenv "HOME") in the *scratch* buffer on Emacs.  You can set your HOME
+directory by the environemtal variable HOME. If you are MS Window VISTA/7
+user, use control panel.
 
 
-"~/.emacs.el"
+"~/.emacs.d/init.el" or "init.el"
 
 This is the configuration file that Emacs tries to read first when it is
-started.  If the HOME directory is "c:\home", then this file is given by
-"c:\home\.emacs.el".  You can change the behavior of Emacs by writing
-various settings in this file.  Note that this is the file that you must
-create by yourself and there exists no ".emacs.el" file by default (unless
-the administrator has created it for you).  And note that in older
-versions of Emacs, the name must be ".emacs".
+started.  You can change the behavior of Emacs by writing various settings
+in this file.  Note that this is the file that you must create by yourself
+and there exists no "init.el" file by default (unless the administrator
+has created it for you).
 
 non-nil
 
@@ -247,7 +245,7 @@ as runemacs.exe.
 Windows 2000/XP has cmd.exe as the shell.  But it is not recommended to use
 cmd.exe.  So 2000/XP users had better use bash or cmdproxy, too.
 
-If you use bash(.exe), write the following in "~/.emacs.el":
+If you use bash(.exe), write the following in "~/.emacs.d/init.el":
 
   (setq shell-file-name "bash")
   (setq shell-command-option "-c")
@@ -257,8 +255,8 @@ and if you use cmdproxy.exe,
   (setq shell-file-name "cmdproxy")
   (setq shell-command-option "-c")
 
-For more details of shell setting in "~/.emacs.el" on NTEmacs, please see
-the web site <http://www.gnu.org/software/emacs/windows/>.
+For more details of shell setting in "~/.emacs./init.el" on NTEmacs,
+please see the web site <http://www.gnu.org/software/emacs/windows/>.
 
 =====================
 * Installation of GAMS mode.
@@ -269,13 +267,13 @@ Then, I will explain the installation.
     You can see the contents of `load-path' by entering `M-x
     customize-option <RET> load-path'.  Or add the directory where
     "gams.el" is installed to `load-path' variable.  For this, add the
-    following in your "~/.emacs.el" file:
+    following in your "~/.emacs.d/init.el" file:
 
     (setq load-path
 	     (cons "~/lisp/gams/" ;; Set the installed directory!
 	       load-path))
 	  	  
-(2) Add the following into your "~/.emacs.el" startup file (after
+(2) Add the following into your "~/.emacs.d/init.el" startup file (after
     load-path setting)
 
     (require 'gams)
@@ -306,7 +304,7 @@ be colored. The third line is required because the default value of
 
 For Emacs 21-23 user, please read BUGS_PROBLEMS.txt file, too.
 
-There is a sample setting file ("dot-emacs-sample") distributed with this
+There is a sample setting file ("setting-sample.el") distributed with this
 file.  Please read it, too.
 
 If you want to use GAMS-TEMPLATE mode, you had better copy the sample
@@ -410,7 +408,7 @@ You can custumize the behavior of Emacs and GAMS mode by changing the
 values of the following variables.  Default value is given in []
 
 You can change the value of these variables by adding in your
-"~/.emacs.el", for example,
+"~/.emacs.d/init.el", for example,
 
 	(setq gams:process-command-name "c:/GAMS20.0/gams.exe")
 	(setq gams-use-mpsge t)
@@ -419,7 +417,7 @@ You can change the value of these variables by adding in your
 Or you can use `customize' built in Emacs.  Try M-x
 customize-apropos-groups [RET] gams [RET.]
 
-Please read the sample file "dot-emacs-sample", too.
+Please read the sample file "setting-sample.el", too.
 
 Basic customizable variables in GAMS and GAMS-LST mode:
 ---------------------------------------------------------------------

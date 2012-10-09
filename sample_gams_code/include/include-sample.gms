@@ -1,8 +1,8 @@
 $stitle		include-sample.gms
-* gams-master-file: gams-sample.gms
+* gams-master-file: ../gams-sample.gms
 $ontext
 Copyright (C)   2003 Shiro Takeda
-Time-stamp: 	<2011-10-03 21:58:25 Shiro Takeda>
+Time-stamp: 	<2012-08-29 10:50:19 Shiro Takeda>
 Filename:	include-sample.gms
 Author: 	Shiro Takeda
 First-written:	<2003/05/19>
@@ -38,7 +38,7 @@ op(sec) = 100;
 util = 0;
 display ene, op, util;
 
-$include include-sample-2.gms
+$include ./include/include-sample-2.gms
 
 m = 100;
 n = 200;

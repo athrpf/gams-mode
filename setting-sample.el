@@ -1,11 +1,12 @@
-;;  This is a "~/.emacs.el" sample for gams.el
+;;  This is a setting sample file for gams.el
 ;;
 ;;  First-written:	<2001/08/13>
-;;  Time-stamp:         <2011-10-22 16:48:20 Shiro Takeda>
+;;  Time-stamp:         <2012-09-08 18:22:19 Shiro Takeda>
 ;;
-;;  This file is created for gams.el version 3.5.
+;;  This file is created for gams.el version 4.0.
 ;;
-;;  Copy and paste the content of this file into "~/.emacs.el" file.
+;;  Copy and paste the content of this file into
+;;  "~/.emacs.d/init.el" file.
 ;;
 ;;  You can see the detailed explanation of each variable with
 ;;  M-x describe-variable.

@@ -1,7 +1,7 @@
 $title  GAMS-OUTLINE mode の説明のためのプログラム．
-display "com: GAMS-OUTLINE mode の説明のためのプログラム．";
+display "@ GAMS-OUTLINE mode の説明のためのプログラム．";
 $ontext
-Time-stamp:     <2011-06-19 14:11:41 Shiro Takeda>
+Time-stamp:     <2012-07-30 14:17:37 Shiro Takeda>
 Filename:       outline-sample.gms
 Author:         Shiro Takeda
 First-written:  <2001/10/26>
@@ -20,12 +20,12 @@ $Id: outline-sample.gms,v 1.9 2009/02/13 15:03:42 st Exp $
 $offtext
 
 display "";
-display "com: このファイルは GAM-OUTLINE mode の説明のためのプログラムです．";
+display "@ このファイルは GAM-OUTLINE mode の説明のためのプログラムです．";
 display "";
 display "HELP を見るには `?' をタイプしてください．";
 display "";
 display "";
-display "com: 記号の説明と基本的な用法";
+display "@ 記号の説明と基本的な用法";
 display "";
 
 *       ----------------------------------------------------------------------
@@ -82,18 +82,18 @@ display "他のキー割当についてはヘルプを見てください";
 
 *       ----------------------------------------------------------------------
 *       GAMS-OUTLINE mode で special comment line を表示したい場合には，GMS ファ
-*       イルで以下のような形で display 命令と "com:" を組み合わせます．
+*       イルで以下のような形で display 命令と "@" を組み合わせます．
 display "";
-display "com: COMで始まる行は special comment line です．";
+display "@ COMで始まる行は special comment line です．";
 display ""
-display "special comment line を表示させるには com: を display とともに利用します．";
+display "special comment line を表示させるには @ を display とともに利用します．";
 display "書き方については GMS ファイルを見てください．";
 
 *       ----------------------------------------------------------------------
 *       例 1.
 *       ----------------------------------------------------------------------
 display "";
-display "com: 例 1: 単純な例";
+display "@ 例 1: 単純な例";
 display "";
 
 set
@@ -121,7 +121,7 @@ display "";
 *       例 2.
 *       ----------------------------------------------------------------------
 display "";
-display "com: 例 2: ある一つの項目をマークし，二つの項目を同時に表示させる";
+display "@ 例 2: ある一つの項目をマークし，二つの項目を同時に表示させる";
 display "";
 display "まずある行で `m' をタイプします．例えば，上の PAR a という行で `m' を";
 display "タイプしてください．そして他の行，例えば下の here という項目の行に移動します．";
@@ -141,7 +141,7 @@ display "";
 *       例 3.
 *       ----------------------------------------------------------------------
 display "";
-display "com: 例 3: core and periphery モデル．表示される項目の変更をしてみる．";
+display "@ 例 3: core and periphery モデル．表示される項目の変更をしてみる．";
 display "";
 display "この例ではいろいろな項目が表示されています．"
 display "- VAR, EQU, PAR, SET, SUM, OTH, LOO, VRI, COM."
@@ -248,7 +248,7 @@ parameters
 
 *       ----------------------------------------------------------------------
 *       Loop.
-display "com: Loop の始まり";
+display "@ Loop の始まり";
 
 loop(tc,
     count2 = (ord(tc) - 1)/(card(tc) - 1);
@@ -305,7 +305,7 @@ display "ループの結果", log;
 *       ----------------------------------------------------------------------
 display "";
 display "";
-display "com: 例 4: ベクトル変数";
+display "@ 例 4: ベクトル変数";
 display "";
 display "";
 
@@ -383,7 +383,7 @@ m2_1.iterlim = 2000;
 
 *       ----------------------------------------------------------------------
 *       賦存量の増加
-display "com: 賦存量の増加";
+display "@ 賦存量の増加";
 
 set     sce     / sce1*sce10 /;
 parameter
@@ -400,7 +400,7 @@ $include M2_1.GEN
 );
 display utility;
 
-display "com: おしまい．";
+display "@ おしまい．";
 
 * --------------------
 * Local Variables:
